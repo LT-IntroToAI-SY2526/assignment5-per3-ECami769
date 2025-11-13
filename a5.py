@@ -217,11 +217,11 @@ def BFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    the_stack = Stack()
-    the_stack.push(state)
+    Queue = Stack()
+    Queue.push(state)
         
-    while the_stack:
-        current_board: Board = the_stack.pop()
+    while Queue:
+        current_board: Board = Queue.pop()
 
         if current_board.goal_test():
             return current_board
@@ -233,7 +233,7 @@ def BFS(state: Board) -> Board:
             for val in possible_values:
                 new_board = copy.deepcopy(current_board)
                 new_board.update(row, col, val)
-                the_stack.append(new_board)
+                Queue.append(new_board)
     return None
 
 if __name__ == "__main__":
