@@ -1,5 +1,6 @@
 import copy  # to make a deepcopy of the board
 from typing import List, Any, Tuple
+import time 
 
 # import Stack and Queue classes for BFS/DFS
 from stack_and_queue import Stack, Queue
@@ -164,7 +165,7 @@ class Board:
         self.num_nums_placed += 1
 
         for r in range(self.size):
-            remove_if_exists(self.rows[row][column], assignment)
+            remove_if_exists(self.rows[r][column], assignment)
 
         for c in range(self.size):
             remove_if_exists(self.rows[row][c], assignment)
@@ -188,20 +189,31 @@ def DFS(state: Board) -> Board:
     """
     the_stack = Stack()
     the_stack.push(state)
+    iterations = 0
+    start_time = time.time()
 
     while not the_stack.is_empty():
+        iterations += 1
         current_board: Board = the_stack.pop()
+
         if current_board.goal_test():
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            print(f"DFS took {iterations} iterations in {elapsed_time: .4f} seconds.")
+
             return current_board
+        
         if not current_board.failure_test():
             row, col = current_board.find_most_constrained_cell()
             # print(row, col)
             possible_values = current_board.rows[row][col]
             print(possible_values)
+
             for val in possible_values:
                 new_board: Board = copy.deepcopy(current_board)
                 new_board.update(row, col, val)
                 the_stack.push(new_board)
+
     return None
 
 
@@ -217,13 +229,21 @@ def BFS(state: Board) -> Board:
     Returns:
         either None in the case of invalid input or a solved board
     """
-    Queue = Stack()
-    Queue.push(state)
+    queue = Queue()
+    queue.push(state)
+    iterations = 0
+    start_time = time.time()
         
-    while Queue:
-        current_board: Board = Queue.pop()
+    while not queue.is_empty():
+        iterations += 1
+        current_board: Board = queue.pop()
+        # print(queue)
 
         if current_board.goal_test():
+            end_time = time.time()
+            elapsed_time = end_time - start_time
+            print(f"BFS took {iterations} iterations in {elapsed_time: .4f} seconds.")
+
             return current_board
         
         if not current_board.failure_test():
@@ -231,9 +251,9 @@ def BFS(state: Board) -> Board:
             possible_values = current_board.rows[row][col]
 
             for val in possible_values:
-                new_board = copy.deepcopy(current_board)
+                new_board: Board = copy.deepcopy(current_board)
                 new_board.update(row, col, val)
-                Queue.append(new_board)
+                queue.push(new_board)
     return None
 
 if __name__ == "__main__":
@@ -378,17 +398,17 @@ if __name__ == "__main__":
 
     print("<<<<<<<<<<<<<< Testing DFS on First Game >>>>>>>>>>>>>>")
 
-    test_dfs_or_bfs(True, first_moves)
+    # test_dfs_or_bfs(True, first_moves)
 
     print("<<<<<<<<<<<<<< Testing DFS on Second Game >>>>>>>>>>>>>>")
 
-    test_dfs_or_bfs(True, second_moves)
+    # test_dfs_or_bfs(True, second_moves)
 
     print("<<<<<<<<<<<<<< Testing BFS on First Game >>>>>>>>>>>>>>")
 
-    test_dfs_or_bfs(False, first_moves)
+    # test_dfs_or_bfs(False, first_moves)
 
     print("<<<<<<<<<<<<<< Testing BFS on Second Game >>>>>>>>>>>>>>")
 
-    test_dfs_or_bfs(False, second_moves)
+    # test_dfs_or_bfs(False, second_moves)
     pass
